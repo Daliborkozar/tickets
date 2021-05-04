@@ -40,7 +40,7 @@ const App = () => {
   const classes = useStyles();
   const [categoryList, setCategoryList] = useState([]);
   const [events, setEvents] = useState([]);
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState("germany");
   const [category, setCategory] = useState([]);
   const [sorting, setSorting] = useState("");
   const [pagination, setPagination] = useState(0);
@@ -78,13 +78,17 @@ console.log(events)
   useEffect(() => {
     const categoryFetch = async () => {
       const { data } = await axios.get(
-        "https://app.ticketmaster.eu/amplify/v2/categories?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&lang=en-us"
+        "https://app.ticketmaster.eu/amplify/v2/categories?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&lang=en-us", {
+          params: {
+            domain: country
+          }
+        }
       );
       setCategoryList(data.categories);
     };
 
     categoryFetch();
-  }, []);
+  }, [country]);
   // "https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=germany&lang=en-us&sort_by=eventdate&start=0&rows=12"
   useEffect(() => {
     const eventFetch = async () => {
