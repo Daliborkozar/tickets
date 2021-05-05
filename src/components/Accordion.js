@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -10,17 +10,15 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import Checkbox from "@material-ui/core/Checkbox"
-import FormGroup from '@material-ui/core/FormGroup';
+import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
 import { GridContext } from "../App";
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "90%",
     background: "#3F4550",
-    padding: '1rem',
+    padding: "1rem",
     height: "100%",
     color: "white",
   },
@@ -36,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
 const SimpleAccordion = (props) => {
   const classes = useStyles();
   const context = useContext(GridContext);
-  
 
   return (
     <div className={classes.root}>
@@ -55,14 +52,22 @@ const SimpleAccordion = (props) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-        <FormGroup column='true'>
-            {context.categoryList ? context.categoryList.map(item => (
-                <FormControlLabel key = {item.id}
-                control={<Checkbox   onChange={context.handleChangeCategory} value={item.id} />}
-                label={item.name}
-              /> 
-            )) : null}
-        </FormGroup>
+          <FormGroup column="true">
+            {context.categoryList
+              ? context.categoryList.map((item) => (
+                  <FormControlLabel
+                    key={item.id}
+                    control={
+                      <Checkbox
+                        onChange={context.handleChangeCategory}
+                        value={item.id}
+                      />
+                    }
+                    label={item.name}
+                  />
+                ))
+              : null}
+          </FormGroup>
           {/* <FormControl component="fieldset">
             <FormLabel component="legend">Category type</FormLabel>
             <RadioGroup
@@ -96,7 +101,10 @@ const SimpleAccordion = (props) => {
         <AccordionDetails>
           <FormControl component="fieldset">
             <FormLabel component="legend">Country</FormLabel>
-            <RadioGroup value={context.country} onChange={context.handleChangeCountry}>
+            <RadioGroup
+              value={context.country}
+              onChange={context.handleChangeCountry}
+            >
               <FormControlLabel
                 value="germany"
                 control={<Radio />}
@@ -147,9 +155,35 @@ const SimpleAccordion = (props) => {
             </RadioGroup>
           </FormControl>
         </AccordionDetails>
-       
       </Accordion>
-      
+      <Accordion defaultExpanded={true}>
+        <AccordionSummary
+          className={classes.AccTitleComponent}
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography className={classes.heading}>Filter by Country</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+        <FormGroup column="true">
+            {context.categoryList
+              ? context.categoryList.map((item) => (
+                  <FormControlLabel
+                    key={item.id}
+                    control={
+                      <Checkbox
+                        onChange={context.handleChangeCategory}
+                        value={item.id}
+                      />
+                    }
+                    label={item.name}
+                  />
+                ))
+              : null}
+          </FormGroup>
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 };

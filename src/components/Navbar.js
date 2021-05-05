@@ -45,7 +45,15 @@ export default function ButtonAppBar(props) {
   const context = useContext(GridContext);
   const classes = useStyles();
   const [drawer, setDrawer] = useState(false);
+  const [value, setValue] = React.useState(null);
+  
 
+  console.log(context.events);
+
+  console.log(context.country);
+
+ 
+  console.log(context.cityChoice);
   return (
     <div className={classes.root}>
       <AppBar position="static" elevation={0} className={classes.appBar}>
@@ -81,18 +89,41 @@ export default function ButtonAppBar(props) {
           </Box>
           <div>
             <Autocomplete
-              id="combo-box-demo"
-              options={context.events}
+              multiple
+              id="tags-standard"
+              options={context.city}
               getOptionLabel={(option) => option.name}
               style={{ width: 300, margin: "0 5rem", display: "inline-block" }}
+              onChange={context.cityChangehandler}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="outlined"
-                  placeholder="Search for events"
+                  placeholder="Search for country"
+                  
                 />
               )}
             />
+     
+          </div>
+          <div>
+            <Autocomplete
+              multiple
+              id="tags-standard"
+              options={context.venues}
+              getOptionLabel={(option) => option.name}
+              style={{ width: 300, margin: "0 5rem", display: "inline-block" }}
+              onChange={context.venueHandler}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  placeholder="Search for country"
+                  
+                />
+              )}
+            />
+     
           </div>
         </Toolbar>
       </AppBar>

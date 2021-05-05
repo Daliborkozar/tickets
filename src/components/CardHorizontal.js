@@ -19,6 +19,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    padding: '0.5rem'
   },
   media: {
     height: 150,

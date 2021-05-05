@@ -46,6 +46,18 @@ const App = () => {
   const [pagination, setPagination] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isGrid, setIsGrid] = useState(true);
+  const [city,setCity] = useState([])
+  const [cityChoice, setCityChoice] = useState();
+  const [venues, setVenues] = useState()
+
+  const cityChangehandler = (e,v) => {
+    let newArray = v.map(item => item.id)
+    setCityChoice(newArray)
+  }
+
+  const venueHandler = (e,v) => {
+    console.log(v)
+  }
 
 
   const handleChangeCountry = (event) => {
@@ -72,6 +84,13 @@ const App = () => {
 
   let categoryString = category && category.join(",");
 
+  const countryCode = {
+    germany: 276,
+    poland: 616,
+    spain: 724
+  }
+ 
+
   useEffect(() => {
     const categoryFetch = async () => {
       const { data } = await axios.get(
@@ -87,6 +106,38 @@ const App = () => {
 
     categoryFetch();
   }, [country]);
+
+  
+
+  useEffect(() => {
+    const citySearch = async() => {
+      const {data} = await axios.get('https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&lang=en-us',{
+        params: {
+            domain: country,
+            country_id: countryCode[`${country}`]
+        },
+      })
+      setCity(data.cities)
+    }
+
+    citySearch()
+
+  },[])
+
+  useEffect(()=> {
+    const venueSearch = async() => {
+      const {data} = await axios.get('https://app.ticketmaster.eu/amplify/v2/venues?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&', {
+          params: {
+            domain: country,
+          }
+      })
+      setVenues(data.venues)
+    }
+
+    venueSearch()
+  },[country])
+
+  let cityChoicejoin = cityChoice && cityChoice.join(",");
   // "https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=germany&lang=en-us&sort_by=eventdate&start=0&rows=12"
   useEffect(() => {
     const eventFetch = async () => {
@@ -97,6 +148,7 @@ const App = () => {
           category_ids: categoryString,
           start: pagination,
           rows: 12,
+          city_ids: cityChoicejoin
         },
       });
       setLoading(false);
@@ -104,7 +156,9 @@ const App = () => {
     };
 
     eventFetch();
-  }, [categoryString, country, pagination, sorting]);
+  }, [categoryString, cityChoicejoin, country, pagination, sorting]);
+
+
 
 
   return (
@@ -121,7 +175,12 @@ const App = () => {
             handleChangeCategory,
             sorting,
             handleSort,
-            categoryList
+            categoryList,
+            city,
+            cityChoice,
+            cityChangehandler,
+            venues,
+            venueHandler
           }}
         >
           <Navbar grid={isGrid} />
