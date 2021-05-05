@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -8,6 +8,10 @@ import AppsIcon from "@material-ui/icons/Apps";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import Box from "@material-ui/core/Box";
 import { GridContext } from "../App";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import Drawer from "@material-ui/core/Drawer";
+import Accordion from "./Accordion";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,21 +29,33 @@ const useStyles = makeStyles((theme) => ({
   iconCenter: {
     margin: "0 auto",
   },
+  navContainer: {
+    display: "flex",
+  },
+  dr: {
+    width: "100%",
+  },
+  paper: {
+    width: 390,
+    background: "#3F4550",
+  },
 }));
 
 export default function ButtonAppBar(props) {
   const context = useContext(GridContext);
   const classes = useStyles();
+  const [drawer, setDrawer] = useState(false);
 
   return (
     <div className={classes.root}>
       <AppBar position="static" elevation={0} className={classes.appBar}>
-        <Toolbar>
+        <Toolbar className={classes.navContainer}>
           <IconButton
             edge="start"
             className={classes.menuButton}
             color="primary"
             aria-label="menu"
+            onClick={() => setDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
@@ -49,7 +65,7 @@ export default function ButtonAppBar(props) {
               className={classes.menuButton}
               color="primary"
               aria-label="menu"
-              onClick={() => context.setIsGrid(false)}
+              onClick={() => context.setIsGrid(true)}
             >
               <AppsIcon fontSize="large" />
             </IconButton>
@@ -58,13 +74,36 @@ export default function ButtonAppBar(props) {
               className={classes.menuButton}
               color="primary"
               aria-label="menu"
-              onClick={() => context.setIsGrid(true)}
+              onClick={() => context.setIsGrid(false)}
             >
               <ViewListIcon fontSize="large" />
             </IconButton>
           </Box>
+          <div>
+            <Autocomplete
+              id="combo-box-demo"
+              options={context.events}
+              getOptionLabel={(option) => option.name}
+              style={{ width: 300, margin: "0 5rem", display: "inline-block" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  placeholder="Search for events"
+                />
+              )}
+            />
+          </div>
         </Toolbar>
       </AppBar>
+      <Drawer
+        anchor={"left"}
+        open={drawer}
+        onClose={() => setDrawer(false)}
+        classes={{ paper: classes.paper }}
+      >
+        <Accordion />
+      </Drawer>
     </div>
   );
 }

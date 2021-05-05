@@ -13,15 +13,18 @@ import { GridContext } from "../App";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 320,
-    width: 300,
+    maxWidth: 800,
+    width: 800,
     maxHeight: 400,
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   media: {
-    height: 140,
+    height: 150,
+    width: 250,
+    borderRadius: '15px'
+
   },
   wrapIcon: {
     verticalAlign: "middle",
@@ -41,13 +44,14 @@ const useStyles = makeStyles({
   },
 });
 
-const MediaCard = (props) => {
+const Horizontal = (props) => {
   const context = useContext(GridContext);
   const classes = useStyles();
 
   //const isGrided = context.isGrid ? classes.switch : null
   let date = new Date(props.on_sale_date.value).toISOString().substring(0, 10);
   //className={`${classes.root} ${context.isGrid ? classes.switch : null}`}
+  console.log("Horizontal")
   return (
     <Card
       className={classes.root} 
@@ -94,4 +98,4 @@ const MediaCard = (props) => {
   );
 };
 
-export default MediaCard;
+export default Horizontal;

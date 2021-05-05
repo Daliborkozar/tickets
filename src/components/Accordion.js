@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -12,14 +12,15 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import Checkbox from "@material-ui/core/Checkbox"
 import FormGroup from '@material-ui/core/FormGroup';
+import { GridContext } from "../App";
 
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    width: "90%",
     background: "#3F4550",
-    padding: "1rem",
+    padding: '1rem',
     height: "100%",
     color: "white",
   },
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SimpleAccordion = (props) => {
   const classes = useStyles();
+  const context = useContext(GridContext);
   
 
   return (
@@ -54,9 +56,9 @@ const SimpleAccordion = (props) => {
         </AccordionSummary>
         <AccordionDetails>
         <FormGroup column='true'>
-            {props.cat ? props.cat.map(item => (
+            {context.categoryList ? context.categoryList.map(item => (
                 <FormControlLabel key = {item.id}
-                control={<Checkbox   onChange={props.changeCategory} value={item.id} />}
+                control={<Checkbox   onChange={context.handleChangeCategory} value={item.id} />}
                 label={item.name}
               /> 
             )) : null}
@@ -94,7 +96,7 @@ const SimpleAccordion = (props) => {
         <AccordionDetails>
           <FormControl component="fieldset">
             <FormLabel component="legend">Country</FormLabel>
-            <RadioGroup value={props.country} onChange={props.changeCountry}>
+            <RadioGroup value={context.country} onChange={context.handleChangeCountry}>
               <FormControlLabel
                 value="germany"
                 control={<Radio />}

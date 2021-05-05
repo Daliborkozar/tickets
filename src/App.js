@@ -6,6 +6,7 @@ import axios from "axios";
 import Accordion from "./components/Accordion";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
+import CardHorizontal from "./components/CardHorizontal";
 import Button from "@material-ui/core/Button";
 
 const API =
@@ -31,10 +32,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const GridContext = createContext({
-  isGrid: true,
-  setIsGrid: null
+  isGrid: null,
+  setIsGrid: null,
 });
-
 
 const App = () => {
   const classes = useStyles();
@@ -44,20 +44,19 @@ const App = () => {
   const [category, setCategory] = useState([]);
   const [sorting, setSorting] = useState("");
   const [pagination, setPagination] = useState(0);
-  const [loading, setLoading] = useState(true)
-  const [isGrid, setIsGrid] = useState(false)
+  const [loading, setLoading] = useState(true);
+  const [isGrid, setIsGrid] = useState(true);
 
-console.log(events)
 
   const handleChangeCountry = (event) => {
     setCountry(event.target.value);
   };
   const handleChangeCategory = (event) => {
-    if(event.target.checked){
-      let newArry =[ ...category, event.target.value]
-      setCategory(newArry)
-    }else {
-      setCategory( category.filter( item => item !== event.target.value))
+    if (event.target.checked) {
+      let newArry = [...category, event.target.value];
+      setCategory(newArry);
+    } else {
+      setCategory(category.filter((item) => item !== event.target.value));
     }
   };
   const handleSort = (event) => {
@@ -69,19 +68,18 @@ console.log(events)
     setPagination(pagination + limit);
   };
 
-  
-  //category array to 
+  //category array to
 
-  let categoryString = category && category.join(',')
-  
+  let categoryString = category && category.join(",");
 
   useEffect(() => {
     const categoryFetch = async () => {
       const { data } = await axios.get(
-        "https://app.ticketmaster.eu/amplify/v2/categories?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&lang=en-us", {
+        "https://app.ticketmaster.eu/amplify/v2/categories?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&lang=en-us",
+        {
           params: {
-            domain: country
-          }
+            domain: country,
+          },
         }
       );
       setCategoryList(data.categories);
@@ -101,53 +99,61 @@ console.log(events)
           rows: 12,
         },
       });
-      setLoading(false)
+      setLoading(false);
       setEvents(data.events);
-
     };
 
     eventFetch();
   }, [categoryString, country, pagination, sorting]);
 
-  // const eventsSet = new Set(events);
-
-  // const eventsarr = [...eventsSet];
 
   return (
     <>
       <div className={classes.root}>
-      <GridContext.Provider
-      value={{
-        isGrid,
-        setIsGrid
-      }}
-    >
-        <Navbar grid={isGrid} />
-        <Grid container spacing={3}>
-          <Grid item xs={3}>
-            <Accordion
-              cat={categoryList}
-              country={country}
-              changeCountry={handleChangeCountry}
-              category={category}
-              changeCategory={handleChangeCategory}
-              sorting={sorting}
-              changeSorting={handleSort}
-              
-            />
-          </Grid>
-          <Grid item xs={9} className={classes.eventGrid}>
-            {loading ? <CircularProgress />
-              : events.map((item) => <Card {...item} key={item.id}/>)
+        <GridContext.Provider
+          value={{
+            isGrid,
+            setIsGrid,
+            events,
+            country,
+            handleChangeCountry,
+            category,
+            handleChangeCategory,
+            sorting,
+            handleSort,
+            categoryList
+          }}
+        >
+          <Navbar grid={isGrid} />
+          <Grid container spacing={3}>
+            {/* <Grid item xs={3}>
+              <Accordion
+                cat={categoryList}
+                country={country}
+                changeCountry={handleChangeCountry}
+                category={category}
+                changeCategory={handleChangeCategory}
+                sorting={sorting}
+                changeSorting={handleSort}
+              />
+            </Grid> */}
+            <Grid item xs={12} className={classes.eventGrid}>
+
+              {loading ? <CircularProgress />
+              : <>
+              {
+                isGrid ? ( events.map(item => <Card {...item} key={item.id} />)) :
+                (events.map(item => <CardHorizontal {...item} key={item.id}/> ))
               }
-            
-          </Grid>
-          <div style={{ margin: '1rem auto' }} onClick={loadMore}>
+              </>}
+            {/* {events.map((item) => isGrid ? <CardHorizontal {...item} key={item.id}/> : <Card {...item} key={item.id}/>) } */}
+            </Grid>
+            <div style={{ margin: "1rem auto" }} onClick={loadMore}>
               <Button variant="contained" color="primary">
                 Load more...
               </Button>
             </div>
-        </Grid>
+          </Grid>
         </GridContext.Provider>
       </div>
     </>
