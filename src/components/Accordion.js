@@ -156,34 +156,7 @@ const SimpleAccordion = (props) => {
           </FormControl>
         </AccordionDetails>
       </Accordion>
-      <Accordion defaultExpanded={true}>
-        <AccordionSummary
-          className={classes.AccTitleComponent}
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2a-content"
-          id="panel2a-header"
-        >
-          <Typography className={classes.heading}>Filter by Country</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <FormGroup column="true">
-            {context.categoryList
-              ? context.categoryList.map((item) => (
-                  <FormControlLabel
-                    key={item.id}
-                    control={
-                      <Checkbox
-                        onChange={context.handleChangeCategory}
-                        value={item.id}
-                      />
-                    }
-                    label={item.name}
-                  />
-                ))
-              : null}
-          </FormGroup>
-        </AccordionDetails>
-      </Accordion>
+     
     </div>
   );
 };

@@ -12,6 +12,7 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Drawer from "@material-ui/core/Drawer";
 import Accordion from "./Accordion";
+import AutocompleteVenue from './AutocompleteVenue'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,15 +46,9 @@ export default function ButtonAppBar(props) {
   const context = useContext(GridContext);
   const classes = useStyles();
   const [drawer, setDrawer] = useState(false);
-  const [value, setValue] = React.useState(null);
   
-
-  console.log(context.events);
-
-  console.log(context.country);
-
  
-  console.log(context.cityChoice);
+  console.log(context.events);
   return (
     <div className={classes.root}>
       <AppBar position="static" elevation={0} className={classes.appBar}>
@@ -107,24 +102,10 @@ export default function ButtonAppBar(props) {
      
           </div>
           <div>
-            <Autocomplete
-              multiple
-              id="tags-standard"
-              options={context.venues}
-              getOptionLabel={(option) => option.name}
-              style={{ width: 300, margin: "0 5rem", display: "inline-block" }}
-              onChange={context.venueHandler}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  placeholder="Search for country"
-                  
-                />
-              )}
-            />
+            <AutocompleteVenue />
      
           </div>
+          
         </Toolbar>
       </AppBar>
       <Drawer

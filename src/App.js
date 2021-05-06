@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import axios from "axios";
-import Accordion from "./components/Accordion";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
 import CardHorizontal from "./components/CardHorizontal";
@@ -46,19 +45,28 @@ const App = () => {
   const [pagination, setPagination] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isGrid, setIsGrid] = useState(true);
-  const [city,setCity] = useState([])
+  const [city, setCity] = useState([]);
   const [cityChoice, setCityChoice] = useState();
-  const [venues, setVenues] = useState()
+  const [venueTags, setVenuesTags] = useState([]);
+  const [venueSelect, setVenueSelect] = useState([]);
+  const [venueInput, setVenueInput] = useState("");
 
-  const cityChangehandler = (e,v) => {
-    let newArray = v.map(item => item.id)
-    setCityChoice(newArray)
-  }
+  const venueSelectHandler = (e, v) => {
+    const newArray = v.map((item) => item.id);
+    setVenueSelect(newArray);
+  };
 
-  const venueHandler = (e,v) => {
-    console.log(v)
-  }
+  const inputVenue = (e, v) => {
+    setVenueInput(v);
+  };
+  console.log(venueTags);
+  console.log(venueSelect);
+  console.log(venueInput);
 
+  const cityChangehandler = (e, v) => {
+    let newArray = v.map((item) => item.id);
+    setCityChoice(newArray);
+  };
 
   const handleChangeCountry = (event) => {
     setCountry(event.target.value);
@@ -87,9 +95,8 @@ const App = () => {
   const countryCode = {
     germany: 276,
     poland: 616,
-    spain: 724
-  }
- 
+    spain: 724,
+  };
 
   useEffect(() => {
     const categoryFetch = async () => {
@@ -107,37 +114,42 @@ const App = () => {
     categoryFetch();
   }, [country]);
 
-  
-
   useEffect(() => {
-    const citySearch = async() => {
-      const {data} = await axios.get('https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&lang=en-us',{
-        params: {
-            domain: country,
-            country_id: countryCode[`${country}`]
-        },
-      })
-      setCity(data.cities)
-    }
-
-    citySearch()
-
-  },[])
-
-  useEffect(()=> {
-    const venueSearch = async() => {
-      const {data} = await axios.get('https://app.ticketmaster.eu/amplify/v2/venues?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&', {
+    const citySearch = async () => {
+      const { data } = await axios.get(
+        "https://app.ticketmaster.eu/amplify/v2/cities?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&lang=en-us",
+        {
           params: {
             domain: country,
-          }
-      })
-      setVenues(data.venues)
-    }
+            country_id: countryCode[`${country}`],
+          },
+        }
+      );
+      setCity(data.cities);
+    };
 
-    venueSearch()
-  },[country])
+    citySearch();
+  }, [country]);
+  let venueList = venueSelect && venueSelect.join(",");
+  useEffect(() => {
+    const input = async () => {
+      const { data } = await axios.get(
+        "https://app.ticketmaster.eu/amplify/v2/venues?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88",
+        {
+          params: {
+            domain: country,
+            venue_name: venueInput,
+          },
+        }
+      );
+      setVenuesTags(data.venues);
+    };
+
+    input();
+  }, [country, venueInput]);
 
   let cityChoicejoin = cityChoice && cityChoice.join(",");
+
   // "https://app.ticketmaster.eu/amplify/v2/events?apikey=3emDiWvgsjWAX84KicT04Sibk9XAsX88&domain=germany&lang=en-us&sort_by=eventdate&start=0&rows=12"
   useEffect(() => {
     const eventFetch = async () => {
@@ -148,7 +160,8 @@ const App = () => {
           category_ids: categoryString,
           start: pagination,
           rows: 12,
-          city_ids: cityChoicejoin
+          city_ids: cityChoicejoin,
+          venue_ids: venueList,
         },
       });
       setLoading(false);
@@ -156,10 +169,7 @@ const App = () => {
     };
 
     eventFetch();
-  }, [categoryString, cityChoicejoin, country, pagination, sorting]);
-
-
-
+  }, [categoryString, cityChoicejoin, country, pagination, sorting, venueList]);
 
   return (
     <>
@@ -179,33 +189,27 @@ const App = () => {
             city,
             cityChoice,
             cityChangehandler,
-            venues,
-            venueHandler
+            inputVenue,
+            venueSelectHandler,
+            venueTags,
+            venueSelect,
           }}
         >
           <Navbar grid={isGrid} />
           <Grid container spacing={3}>
-            {/* <Grid item xs={3}>
-              <Accordion
-                cat={categoryList}
-                country={country}
-                changeCountry={handleChangeCountry}
-                category={category}
-                changeCategory={handleChangeCategory}
-                sorting={sorting}
-                changeSorting={handleSort}
-              />
-            </Grid> */}
             <Grid item xs={12} className={classes.eventGrid}>
-
-              {loading ? <CircularProgress />
-              : <>
-              {
-                isGrid ? ( events.map(item => <Card {...item} key={item.id} />)) :
-                (events.map(item => <CardHorizontal {...item} key={item.id}/> ))
-              }
-              </>}
-            {/* {events.map((item) => isGrid ? <CardHorizontal {...item} key={item.id}/> : <Card {...item} key={item.id}/>) } */}
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <>
+                  {isGrid
+                    ? events.map((item) => <Card {...item} key={item.id} />)
+                    : events.map((item) => (
+                        <CardHorizontal {...item} key={item.id} />
+                      ))}
+                </>
+              )}
+              
             </Grid>
             <div style={{ margin: "1rem auto" }} onClick={loadMore}>
               <Button variant="contained" color="primary">

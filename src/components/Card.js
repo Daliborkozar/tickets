@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -9,7 +9,7 @@ import Box from "@material-ui/core/Box";
 import EventIcon from "@material-ui/icons/Event";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import noImg from "../assets/noimg.png";
-import { GridContext } from "../App";
+
 
 const useStyles = makeStyles({
   root: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles({
 });
 
 const MediaCard = (props) => {
-  const context = useContext(GridContext);
+  
   const classes = useStyles();
 
   //const isGrided = context.isGrid ? classes.switch : null
